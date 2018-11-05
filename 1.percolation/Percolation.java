@@ -100,12 +100,13 @@ public class Percolation {
         };
     }
 
-    public static void main(String[] args) {
-        // Percolation p = new Percolation(20);
-        // System.out.println(Arrays.toString(p.cellsStatus));
-        // System.out.println("length " + p.cellsStatus.length);
-        // System.out.println("Open 3, 4 ");
-        // p.open(3, 4);
-        // System.out.println("Is 3, 4 open? " + p.isOpen(3, 4));
-    }
+    // For test
+    // public static void main(String[] args) {
+    //     Percolation p = new Percolation(20);
+    //     System.out.println(Arrays.toString(p.cellsStatus));
+    //     System.out.println("length " + p.cellsStatus.length);
+    //     System.out.println("Open 3, 4 ");
+    //     p.open(3, 4);
+    //     System.out.println("Is 4, 5 open? " + p.isOpen(4, 5));
+    // }
 }
