@@ -6,39 +6,73 @@
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
-import java.util.Arrays;
-
 public class Percolation {
-    public int sideLength;
-    public WeightedQuickUnionUF uf;
+    private int sideLength;
+    private WeightedQuickUnionUF uf;
     // Record the open/close status of each site.
-    public boolean[] cellsStatus;
-    public int openSitesNum = 0;
+    private boolean[] cellsStatus;
+    private int openSitesNum = 0;
+    private int virtrueTopIdx;
+    private int virtrueBottomIdx;
 
     // create n-by-n grid, with all sites blocked
     public Percolation(int n) {
         sideLength = n;
-        uf = new WeightedQuickUnionUF(n);
+        // The parameter is the size of the Union Finder data structure.
+        uf = new WeightedQuickUnionUF(n * n + 2);
         cellsStatus = new boolean[n * n];
+        // Use the second last object as the virture top site.
+        virtrueTopIdx = n * n;
+        // Use the last object as the virture bottom site.
+        virtrueBottomIdx = n * n + 1;
     }
 
     // open site (row, col) if it is not open already
     public void open(int row, int col) {
-        int idx = getIndex(row, col);
-        if (!cellsStatus[idx]) {
+        int idx = xyTo1D(row, col);
+        if (isIndexIlegal(idx) && !cellsStatus[idx]) {
             cellsStatus[idx] = true;
             openSitesNum++;
+
+            // Check if the site is on the first row or the last row,
+            // if yes, connect it to the virtrue top site or the virtrue bottom site.
+            if (row == 1) {
+                uf.union(idx, virtrueTopIdx);
+            }
+            if (row == sideLength) {
+                uf.union(idx, virtrueBottomIdx);
+            }
+
+            // Connect the site to its open neighbours.
+            int[] neighbourIndices = getNeighbourSitesIndices(idx);
+            for (int i : neighbourIndices) {
+                if (isIndexIlegal(i) && cellsStatus[i]) {
+                    uf.union(idx, i);
+                }
+            }
         }
     }
 
     // is site (row, col) open?
     public boolean isOpen(int row, int col) {
-        return cellsStatus[getIndex(row, col)];
+        int idx = xyTo1D(row, col);
+        if (isIndexIlegal(idx)) {
+            return cellsStatus[idx];
+        }
+        else {
+            return false;
+        }
     }
 
     // is site (row, col) full?
     public boolean isFull(int row, int col) {
-        return false;
+        int idx = xyTo1D(row, col);
+        if (isIndexIlegal(idx)) {
+            return uf.connected(idx, virtrueTopIdx);
+        }
+        else {
+            return false;
+        }
     }
 
     // number of open sites
@@ -48,20 +82,30 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        return false;
+        return uf.connected(virtrueTopIdx, virtrueBottomIdx);
     }
 
     // get the correspondant index of given row and column.
-    public int getIndex(int row, int col) {
+    private int xyTo1D(int row, int col) {
         return ((row - 1) * sideLength - 1) + col;
     }
 
+    private boolean isIndexIlegal(int index) {
+        return index >= 0 && index < cellsStatus.length;
+    }
+
+    private int[] getNeighbourSitesIndices(int index) {
+        return new int[] {
+                index - sideLength, index + sideLength, index - 1, index + 1
+        };
+    }
+
     public static void main(String[] args) {
-        Percolation p = new Percolation(20);
-        System.out.println(Arrays.toString(p.cellsStatus));
-        System.out.println("length " + p.cellsStatus.length);
-        System.out.println("Open 3, 4 ");
-        p.open(3, 4);
-        System.out.println("Is 3, 4 open? " + p.isOpen(3, 4));
+        // Percolation p = new Percolation(20);
+        // System.out.println(Arrays.toString(p.cellsStatus));
+        // System.out.println("length " + p.cellsStatus.length);
+        // System.out.println("Open 3, 4 ");
+        // p.open(3, 4);
+        // System.out.println("Is 3, 4 open? " + p.isOpen(3, 4));
     }
 }
