@@ -51,23 +51,24 @@
     <session id="-1161373142">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="1" />
           <entry key="project.open.time.3" value="1" />
           <entry key="project.opened" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="1694" />
+          <entry key="java" value="1816" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="1694" />
+          <entry key="JAVA" value="1816" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="java" value="4" />
+          <entry key="java" value="5" />
           <entry key="png" value="3" />
           <entry key="txt" value="10" />
         </counts>
@@ -75,7 +76,7 @@
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Image" value="3" />
-          <entry key="JAVA" value="4" />
+          <entry key="JAVA" value="5" />
           <entry key="PLAIN_TEXT" value="10" />
         </counts>
       </usages-collector>
@@ -83,11 +84,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Percolation.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="352">
               <caret line="82" column="33" lean-forward="true" selection-start-line="82" selection-start-column="33" selection-end-line="82" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/PercolationStats.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="612">
+              <caret line="36" column="1" lean-forward="true" selection-start-line="36" selection-start-column="1" selection-end-line="36" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -110,12 +120,13 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/Percolation.java" />
+        <option value="$PROJECT_DIR$/PercolationStats.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="423" />
-    <option name="y" value="147" />
+    <option name="x" value="776" />
+    <option name="y" value="175" />
     <option name="width" value="1242" />
     <option name="height" value="1015" />
   </component>
@@ -191,7 +202,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="423" y="147" width="1242" height="1015" extended-state="0" />
+    <frame x="776" y="175" width="1242" height="1015" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20933977" />
       <window_info id="Structure" order="1" show_stripe_button="false" side_tool="true" weight="0.25" />
@@ -279,6 +291,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="352">
           <caret line="82" column="33" lean-forward="true" selection-start-line="82" selection-start-column="33" selection-end-line="82" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PercolationStats.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="36" column="1" lean-forward="true" selection-start-line="36" selection-start-column="1" selection-end-line="36" selection-end-column="1" />
         </state>
       </provider>
     </entry>
