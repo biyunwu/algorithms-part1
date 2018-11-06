@@ -8,6 +8,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     private int sideLength;
+    private int totalSitesNum;
     private WeightedQuickUnionUF uf;
     // Record the open/close status of each site.
     private boolean[] cellsStatus;
@@ -18,13 +19,14 @@ public class Percolation {
     // create n-by-n grid, with all sites blocked
     public Percolation(int n) {
         sideLength = n;
+        totalSitesNum = n * n;
         // The parameter is the size of the Union Finder data structure.
-        uf = new WeightedQuickUnionUF(n * n + 2);
-        cellsStatus = new boolean[n * n];
+        uf = new WeightedQuickUnionUF(totalSitesNum + 2);
+        cellsStatus = new boolean[totalSitesNum];
         // Use the second last object as the virture top site.
-        virtrueTopIdx = n * n;
+        virtrueTopIdx = totalSitesNum;
         // Use the last object as the virture bottom site.
-        virtrueBottomIdx = n * n + 1;
+        virtrueBottomIdx = totalSitesNum + 1;
     }
 
     // open site (row, col) if it is not open already
@@ -44,19 +46,14 @@ public class Percolation {
             }
 
             // Connect the site to its open neighbours.
-            int[] neighbourIndices = getNeighbourSitesIndices(idx);
+            int[] neighbourIndices = getNeighbourSitesIndices(row, col);
 
             for (int i = 0; i < neighbourIndices.length; i++) {
                 int currIdx = neighbourIndices[i];
-                if (isIndexIlegal(currIdx) && cellsStatus[currIdx]) {
-                    uf.union(idx, currIdx);
+                if (isIndexIlegal(currIdx) && cellsStatus[currIdx] && !uf.connected(currIdx, idx)) {
+                    uf.union(currIdx, idx);
                 }
             }
-            // for (int i : neighbourIndices) {
-            //     if (isIndexIlegal(i) && cellsStatus[i]) {
-            //         uf.union(idx, i);
-            //     }
-            // }
         }
     }
 
@@ -64,7 +61,7 @@ public class Percolation {
     public boolean isOpen(int row, int col) {
         int idx = xyTo1D(row, col);
         if (!isIndexIlegal(idx)) {
-            throwError();
+            checkArguments(new int[] { idx });
         }
         return cellsStatus[idx];
     }
@@ -73,7 +70,7 @@ public class Percolation {
     public boolean isFull(int row, int col) {
         int idx = xyTo1D(row, col);
         if (!isIndexIlegal(idx)) {
-            throwError();
+            checkArguments(new int[] { idx });
         }
         return uf.connected(idx, virtrueTopIdx);
     }
@@ -90,21 +87,57 @@ public class Percolation {
 
     // get the correspondant index of given row and column.
     private int xyTo1D(int row, int col) {
+        checkArguments(new int[] { row, col });
         return ((row - 1) * sideLength - 1) + col;
     }
 
     private boolean isIndexIlegal(int index) {
-        return index >= 0 && index < cellsStatus.length;
+        return index >= 0 && index < totalSitesNum;
     }
 
-    private int[] getNeighbourSitesIndices(int index) {
-        return new int[] {
-                index - sideLength, index + sideLength, index - 1, index + 1
-        };
+    private int[] getNeighbourSitesIndices(int row, int col) {
+        int index = xyTo1D(row, col);
+        int above = index - sideLength, below = index + sideLength, left = index - 1, right = index
+                + 1;
+        // if (row == 1 && col == 1) {
+        //     return new int[] { below, right };
+        // }
+        // else if (row == 1 && col == sideLength) {
+        //     return new int[] { below, left };
+        // }
+        // else if (row == sideLength && col == 1) {
+        //     return new int[] { above, right };
+        // }
+        // else if (row == sideLength && col == sideLength) {
+        //     return new int[] { above, left };
+        // }
+        if (col == 1) {
+            // In the first column, no left sites.
+            return new int[] { above, below, right };
+        }
+        else if (col == sideLength) {
+            // In the last column, no right sites.
+            return new int[] { above, below, left };
+        }
+        else if (row == 1) {
+            // In the first row, no above site.
+            return new int[] { below, left, right };
+        }
+        else if (row == sideLength) {
+            // In the last row, no below site.
+            return new int[] { above, left, right };
+        }
+        else {
+            return new int[] { above, below, left, right };
+        }
     }
 
-    private void throwError() {
-        throw new java.lang.IllegalArgumentException("");
+    private void checkArguments(int[] args) {
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] <= 0) {
+                throw new java.lang.IllegalArgumentException("Illegal arguments!");
+            }
+        }
     }
 
     // For test
