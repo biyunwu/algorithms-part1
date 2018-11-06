@@ -12,9 +12,9 @@ public class PercolationStats {
     private int totalSitesNum;
     private double[] percolationRateList;
     private int trialsNum;
-    private double meanPercolationRate;
-    private double standardDeviation;
-    private double confidenceCoefficient = 1.96;
+    private double meanPercolationRate = 0;
+    private double standardDeviation = 0;
+    private double confidence_95_coefficient = 1.96;
     private double confidence95Lo;
     private double confidence95Hi;
 
@@ -30,28 +30,58 @@ public class PercolationStats {
             trialsNum = trials;
         }
 
-        calculateAveragePercolationThreshold();
-        standardDeviation = StdStats.stddev(percolationRateList);
-        confidence95Lo = meanPercolationRate - (confidenceCoefficient * standardDeviation / Math
-                .sqrt(trialsNum));
-        confidence95Hi = meanPercolationRate + (confidenceCoefficient * standardDeviation / Math
-                .sqrt(trialsNum));
-    }
-
-    private void calculateAveragePercolationThreshold() {
+        // sample mean of percolation threshold
         for (int i = 0; i < trialsNum; i++) {
             Percolation p = new Percolation(sideLength);
             int row = getRandomIdx();
             int col = getRandomIdx();
             while (!p.percolates()) {
+                // if (!p.isOpen(row, col)) {
                 p.open(row, col);
+                // }
+                // else{
                 row = getRandomIdx();
                 col = getRandomIdx();
+                // }
             }
             double currPercolationRate = (double) p.numberOfOpenSites() / totalSitesNum;
             percolationRateList[i] = currPercolationRate;
+            // System.out.println("Percolation Rate " + (i + 1) + ": " + currPercolationRate);
         }
         meanPercolationRate = StdStats.mean(percolationRateList);
+        standardDeviation = StdStats.stddev(percolationRateList);
+        confidence95Lo = meanPercolationRate - (confidence_95_coefficient * standardDeviation / Math
+                .sqrt(trialsNum));
+        confidence95Hi = meanPercolationRate + (confidence_95_coefficient * standardDeviation / Math
+                .sqrt(trialsNum));
+    }
+
+
+    public double mean() {
+        return meanPercolationRate;
+    }
+
+    // sample standard deviation of percolation threshold
+    public double stddev() {
+        // checkMeanPercolationRate();
+        // standardDeviation = StdStats.stddev(percolationRateList);
+        return standardDeviation;
+    }
+
+    // low  endpoint of 95% confidence interval
+    public double confidenceLo() {
+        // checkStandardDeviation();
+        // return meanPercolationRate - (confidence_95_coefficient * standardDeviation / Math
+        //         .sqrt(trialsNum));
+        return confidence95Lo;
+    }
+
+    // high endpoint of 95% confidence interval
+    public double confidenceHi() {
+        // checkStandardDeviation();
+        // return meanPercolationRate + (confidence_95_coefficient * standardDeviation / Math
+        //         .sqrt(trialsNum));
+        return confidence95Hi;
     }
 
     private int getRandomIdx() {
@@ -59,25 +89,18 @@ public class PercolationStats {
         return StdRandom.uniform(1, sideLength + 1);
     }
 
-    // sample mean of percolation threshold
-    public double mean() {
-        return meanPercolationRate;
-    }
+    // private void checkMeanPercolationRate() {
+    //     if (meanPercolationRate == 0) {
+    //         mean();
+    //     }
+    // }
 
-    // sample standard deviation of percolation threshold
-    public double stddev() {
-        return standardDeviation;
-    }
-
-    // low  endpoint of 95% confidence interval
-    public double confidenceLo() {
-        return confidence95Lo;
-    }
-
-    // high endpoint of 95% confidence interval
-    public double confidenceHi() {
-        return confidence95Hi;
-    }
+    // private void checkStandardDeviation() {
+    //     checkMeanPercolationRate();
+    //     if (standardDeviation == 0) {
+    //         stddev();
+    //     }
+    // }
 
     public static void main(String[] args) {
         int n = Integer.parseInt(args[0]);
