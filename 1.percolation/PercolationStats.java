@@ -1,17 +1,20 @@
 /* *****************************************************************************
  *  Name: Biyun Wu
  *  Date: 11/05/2018
- *  Description: A statistics programm to examin the Percolation algorithm.
+ *  Description: A statistics programm to examin the Percolation algorithm. http://coursera.cs.princeton.edu/algs4/assignments/percolation.html
  **************************************************************************** */
 
 import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
     private int sideLength; // Grid unit
     private int totalSitesNum;
     private double[] percolationRateList;
-    private int trails;
+    private int trialsNum;
     private double meanPercolationRate = 0;
+    private double standardDeviation = 0;
+    private double confidence_95_coefficient = 1.96;
 
     // perform trials independent experiments on an n-by-n grid
     public PercolationStats(int n, int trials) {
@@ -21,14 +24,14 @@ public class PercolationStats {
         else {
             sideLength = n;
             totalSitesNum = n * n;
-            percolationRateList = new double[n];
-            trails = trials;
+            percolationRateList = new double[trials];
+            trialsNum = trials;
         }
     }
 
     // sample mean of percolation threshold
     public double mean() {
-        for (int i = 0; i < trails; i++) {
+        for (int i = 0; i < trialsNum; i++) {
             Percolation p = new Percolation(sideLength);
             int row = getRandomIdx();
             int col = getRandomIdx();
@@ -43,51 +46,58 @@ public class PercolationStats {
             }
             double currPercolationRate = (double) p.numberOfOpenSites() / totalSitesNum;
             percolationRateList[i] = currPercolationRate;
-            System.out.println("Percolation Rate " + (i + 1) + ": " + currPercolationRate);
+            // System.out.println("Percolation Rate " + (i + 1) + ": " + currPercolationRate);
         }
-        double sum = 0;
-        int count = 0;
-        for (int k = 0; k < percolationRateList.length; k++) {
-            if (percolationRateList[k] != 0) {
-                sum += percolationRateList[k];
-                count++;
-            }
-        }
-        meanPercolationRate = sum / count;
+        meanPercolationRate = StdStats.mean(percolationRateList);
         return meanPercolationRate;
     }
 
     // sample standard deviation of percolation threshold
     public double stddev() {
-        if (meanPercolationRate == 0) {
-            mean();
-        }
-        double sum = 0;
-        for (int i = 0; i < percolationRateList.length; i++) {
-            sum += Math.pow(percolationRateList[i] - meanPercolationRate, 2);
-        }
-        return Math.sqrt(sum / (trails - 1));
+        checkMeanPercolationRate();
+        standardDeviation = StdStats.stddev(percolationRateList);
+        return standardDeviation;
     }
 
-    //
-    // // low  endpoint of 95% confidence interval
-    // public double confidenceLo() {
-    //
-    // }
-    //
-    // // high endpoint of 95% confidence interval
-    // public double confidenceHi() {
-    //
-    // }
-    //
+    // low  endpoint of 95% confidence interval
+    public double confidenceLo() {
+        checkStandardDeviation();
+        return meanPercolationRate - (confidence_95_coefficient * standardDeviation / Math
+                .sqrt(trialsNum));
+    }
+
+    // high endpoint of 95% confidence interval
+    public double confidenceHi() {
+        checkStandardDeviation();
+        return meanPercolationRate + (confidence_95_coefficient * standardDeviation / Math
+                .sqrt(trialsNum));
+    }
+
     private int getRandomIdx() {
         // StdRandom.uniform(a, b) return an integer of [a, b)
         return StdRandom.uniform(1, sideLength + 1);
     }
 
+    private void checkMeanPercolationRate() {
+        if (meanPercolationRate == 0) {
+            mean();
+        }
+    }
+
+    private void checkStandardDeviation() {
+        checkMeanPercolationRate();
+        if (standardDeviation == 0) {
+            stddev();
+        }
+    }
+
     public static void main(String[] args) {
-        PercolationStats ps = new PercolationStats(200, 200);
-        System.out.println("Mean: " + ps.mean());
-        System.out.println("Stddev: " + ps.stddev());
+        int n = Integer.parseInt(args[0]);
+        int t = Integer.parseInt(args[0]);
+        PercolationStats ps = new PercolationStats(n, t);
+        System.out.println("Mean                    = " + ps.mean());
+        System.out.println("Standard Deviation      = " + ps.stddev());
+        System.out.println(
+                "95% confidence interval = [" + ps.confidenceLo() + ", " + ps.confidenceHi() + "]");
     }
 }

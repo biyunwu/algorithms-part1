@@ -45,34 +45,37 @@ public class Percolation {
 
             // Connect the site to its open neighbours.
             int[] neighbourIndices = getNeighbourSitesIndices(idx);
-            for (int i : neighbourIndices) {
-                if (isIndexIlegal(i) && cellsStatus[i]) {
-                    uf.union(idx, i);
+
+            for (int i = 0; i < neighbourIndices.length; i++) {
+                int currIdx = neighbourIndices[i];
+                if (isIndexIlegal(currIdx) && cellsStatus[currIdx]) {
+                    uf.union(idx, currIdx);
                 }
             }
+            // for (int i : neighbourIndices) {
+            //     if (isIndexIlegal(i) && cellsStatus[i]) {
+            //         uf.union(idx, i);
+            //     }
+            // }
         }
     }
 
     // is site (row, col) open?
     public boolean isOpen(int row, int col) {
         int idx = xyTo1D(row, col);
-        if (isIndexIlegal(idx)) {
-            return cellsStatus[idx];
+        if (!isIndexIlegal(idx)) {
+            throwError();
         }
-        else {
-            return false;
-        }
+        return cellsStatus[idx];
     }
 
     // is site (row, col) full?
     public boolean isFull(int row, int col) {
         int idx = xyTo1D(row, col);
-        if (isIndexIlegal(idx)) {
-            return uf.connected(idx, virtrueTopIdx);
+        if (!isIndexIlegal(idx)) {
+            throwError();
         }
-        else {
-            return false;
-        }
+        return uf.connected(idx, virtrueTopIdx);
     }
 
     // number of open sites
@@ -98,6 +101,10 @@ public class Percolation {
         return new int[] {
                 index - sideLength, index + sideLength, index - 1, index + 1
         };
+    }
+
+    private void throwError() {
+        throw new java.lang.IllegalArgumentException("");
     }
 
     // For test
