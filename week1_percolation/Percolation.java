@@ -9,12 +9,16 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 public class Percolation {
     private int sideLength;
     private int totalSitesNum;
+    // Data structure with both top and bottom virtrue sites.
     private WeightedQuickUnionUF uf;
+    // Data structure without virtrue bottom site to prevent backwash in isFull().
+    private WeightedQuickUnionUF ufWithVirtrueTopSite;
     // Record the open/close status of each site.
     private boolean[] cellsStatus;
     private int openSitesNum = 0;
     private int virtrueTopIdx;
     private int virtrueBottomIdx;
+    private boolean isPercolated = false;
 
     // create n-by-n grid, with all sites blocked
     public Percolation(int n) {
@@ -25,6 +29,7 @@ public class Percolation {
         totalSitesNum = n * n;
         // The parameter is the size of the Union Finder data structure.
         uf = new WeightedQuickUnionUF(totalSitesNum + 2);
+        ufWithVirtrueTopSite = new WeightedQuickUnionUF(totalSitesNum + 1);
         cellsStatus = new boolean[totalSitesNum];
         // Use the second last object as the virture top site.
         virtrueTopIdx = totalSitesNum;
@@ -44,6 +49,7 @@ public class Percolation {
             // Check if the site is on the first row or the last row,
             // if yes, connect it to the virtrue top site or the virtrue bottom site.
             if (row == 1) {
+                ufWithVirtrueTopSite.union(idx, virtrueTopIdx);
                 uf.union(idx, virtrueTopIdx);
             }
             if (row == sideLength) {
@@ -55,10 +61,14 @@ public class Percolation {
 
             for (int i = 0; i < neighbourIndices.length; i++) {
                 int currIdx = neighbourIndices[i];
-                if (isIndexIlegal(currIdx) && cellsStatus[currIdx] && !uf.connected(currIdx, idx)) {
+                if (isIndexIlegal(currIdx) && cellsStatus[currIdx] && !ufWithVirtrueTopSite
+                        .connected(currIdx, idx)) {
+                    ufWithVirtrueTopSite.union(currIdx, idx);
                     uf.union(currIdx, idx);
                 }
             }
+
+            if (uf.connected(virtrueTopIdx, virtrueBottomIdx)) isPercolated = true;
         }
     }
 
@@ -75,10 +85,7 @@ public class Percolation {
         checkArguments(row);
         checkArguments(col);
         int idx = xyTo1D(row, col);
-        // if (row <= 0 || col <= 0 || !isIndexIlegal(idx)) {
-        //     throw new IllegalArgumentException("Arguments should be greater than 0.");
-        // }
-        return uf.connected(idx, virtrueTopIdx);
+        return ufWithVirtrueTopSite.connected(idx, virtrueTopIdx);
     }
 
     // number of open sites
@@ -88,7 +95,7 @@ public class Percolation {
 
     // does the system percolate?
     public boolean percolates() {
-        return uf.connected(virtrueTopIdx, virtrueBottomIdx);
+        return isPercolated;
     }
 
     // get the correspondant index of given row and column.
@@ -104,18 +111,6 @@ public class Percolation {
         int index = xyTo1D(row, col);
         int above = index - sideLength, below = index + sideLength, left = index - 1, right = index
                 + 1;
-        // if (row == 1 && col == 1) {
-        //     return new int[] { below, right };
-        // }
-        // else if (row == 1 && col == sideLength) {
-        //     return new int[] { below, left };
-        // }
-        // else if (row == sideLength && col == 1) {
-        //     return new int[] { above, right };
-        // }
-        // else if (row == sideLength && col == sideLength) {
-        //     return new int[] { above, left };
-        // }
         if (col == 1) {
             // In the first column, no left sites.
             return new int[] { above, below, right };
@@ -146,7 +141,7 @@ public class Percolation {
     // For test
     // public static void main(String[] args) {
     //     Percolation p = new Percolation(-10);
-    //     System.out.println(Arrays.toString(p.cellsStatus));
+    //     // System.out.println(Arrays.toString(p.cellsStatus));
     //     System.out.println("length " + p.cellsStatus.length);
     //     System.out.println("Open 3, 4 ");
     //     p.open(1, 5);
