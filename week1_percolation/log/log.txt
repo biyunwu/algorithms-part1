@@ -6,7 +6,7 @@ Compilation:  PASSED
 API:          PASSED
 
 Spotbugs:     PASSED
-PMD:          FAILED (10 warnings)
+PMD:          PASSED
 Checkstyle:   PASSED
 
 Correctness:  33/33 tests passed
@@ -20,8 +20,8 @@ ASSESSMENT DETAILS
 
 The following files were submitted:
 ----------------------------------
-5.8K Nov  6 22:23 Percolation.java
-3.3K Nov  6 22:23 PercolationStats.java
+5.3K Nov  7 00:20 Percolation.java
+3.4K Nov  7 00:20 PercolationStats.java
 
 
 ********************************************************************************
@@ -62,17 +62,6 @@ PercolationStats:
 
 % pmd .
 *-----------------------------------------------------------
-Percolation.java:10: The private instance (or static) variable 'sideLength' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
-Percolation.java:11: The private instance (or static) variable 'totalSitesNum' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
-Percolation.java:13: The private instance (or static) variable 'uf' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
-Percolation.java:15: The private instance (or static) variable 'ufWithVirtrueTopSite' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
-Percolation.java:19: The private instance (or static) variable 'virtrueTopIdx' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
-Percolation.java:20: The private instance (or static) variable 'virtrueBottomIdx' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
-PercolationStats.java:16: The private instance (or static) variable 'standardDeviation' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
-PercolationStats.java:17: The private instance (or static) variable 'confidenceCoefficient' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
-PercolationStats.java:18: The private instance (or static) variable 'confidence95Lo' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
-PercolationStats.java:19: The private instance (or static) variable 'confidence95Hi' can be made 'final'; it is initialized only in the declaration or constructor. [ImmutableField]
-PMD ends with 10 warnings.
 
 
 ================================================================
@@ -457,11 +446,11 @@ Test 4: Call PercolationStats methods with trials = 3 and values of n that go up
 
          n  seconds log ratio
      ------------------------
-       724     0.22       2.4
-      1024     0.49       2.3
-      1448     1.33       2.9
-      2048     3.36       2.7
-      2896     8.43       2.7
+       724     0.22       2.5
+      1024     0.50       2.3
+      1448     1.42       3.0
+      2048     3.35       2.5
+      2896     8.37       2.6
 ==> passed
 
 
@@ -520,13 +509,13 @@ Test 1a-1e: Creates an n-by-n percolation system; open sites at random until
                                        2 * connected()
                  n       union()              + find()        constructor
 -----------------------------------------------------------------------------------
-=> passed       16          275                   584                   2
-=> passed       32         1200                  2712                   2
-=> passed       64         4625                 10536                   2
-=> passed      128        18782                 42896                   2
-=> passed      256        74199                169578                   2
-=> passed      512       296267                678384                   2
-=> passed     1024      1178329               2697528                   2
+=> passed       16          260                   548                   2
+=> passed       32         1105                  2498                   2
+=> passed       64         4666                 10538                   2
+=> passed      128        17575                 40032                   2
+=> passed      256        71894                164334                   2
+=> passed      512       296945                679562                   2
+=> passed     1024      1189112               2725832                   2
 ==> 7/7 tests passed
 
 
@@ -544,8 +533,8 @@ Tests 2a-2f: Check whether the number of calls to union(), connected(), and find
 
                  n     per open()      per isOpen()    per isFull()    per percolates()
 ---------------------------------------------------------------------------------------------
-=> passed       16        8               0               1               0
-=> passed       32        7               0               1               0
+=> passed       16        6               0               1               0
+=> passed       32        8               0               1               0
 => passed       64        8               0               1               0
 => passed      128        8               0               1               0
 => passed      256        8               0               1               0
@@ -567,12 +556,11 @@ Test 3: Create an n-by-n percolation system; interleave calls to percolates()
                         log   union-find     log
          n  seconds   ratio   operations   ratio
      -------------------------------------------
-       724     0.10     3.2      2530464     2.0
-      1024     0.16     1.2      5082910     2.0
-      1448     0.54     3.6     10145670     2.0
-      2048     1.27     2.5     20396150     2.0
-      2896     3.45     2.9     40509304     2.0
-      4096     7.62     2.3     81275176     2.0
+      1024     0.16     2.4      5080474     2.0
+      1448     0.44     2.9     10161122     2.0
+      2048     1.21     2.9     20364922     2.0
+      2896     3.35     2.9     40561440     2.0
+      4096     7.05     2.1     81536762     2.0
 ==> passed
 
 
@@ -585,11 +573,11 @@ Test 4: Create an n-by-n percolation system; interleave calls to open(),
                         log   union-find     log
          n  seconds   ratio   operations   ratio
      -------------------------------------------
-      1024     0.18     2.6      6378966     2.0
-      1448     0.52     3.0     12617152     2.0
-      2048     1.39     2.8     25260786     2.0
-      2896     3.46     2.6     50471438     2.0
-      4096     7.71     2.3    101492546     2.0
+      1024     0.17     2.3      6364658     2.0
+      1448     0.51     3.2     12666382     2.0
+      2048     1.39     2.9     25262774     2.0
+      2896     3.58     2.7     50684416     2.0
+      4096     7.99     2.3    101516476     2.0
 ==> passed
 
 

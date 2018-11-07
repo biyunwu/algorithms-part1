@@ -7,22 +7,22 @@
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-    private int sideLength;
-    private int totalSitesNum;
+    private final int sideLength;
+    private final int totalSitesNum;
     // Data structure with both top and bottom virtrue sites.
-    private WeightedQuickUnionUF uf;
+    private final WeightedQuickUnionUF uf;
     // Data structure without virtrue bottom site to prevent backwash in isFull().
-    private WeightedQuickUnionUF ufWithVirtrueTopSite;
+    private final WeightedQuickUnionUF ufWithVirtrueTopSite;
     // Record the open/close status of each site.
-    private boolean[] cellsStatus;
+    private final boolean[] cellsStatus;
+    private final int virtrueTopIdx;
+    private final int virtrueBottomIdx;
     private int openSitesNum = 0;
-    private int virtrueTopIdx;
-    private int virtrueBottomIdx;
     private boolean isPercolated = false;
 
     // create n-by-n grid, with all sites blocked
     public Percolation(int n) {
-        if (n <= 0) {
+        if (n < 1) {
             throw new IllegalArgumentException("Argument should be greater than 0.");
         }
         sideLength = n;
@@ -39,8 +39,8 @@ public class Percolation {
 
     // open site (row, col) if it is not open already
     public void open(int row, int col) {
-        checkArguments(row);
-        checkArguments(col);
+        checkArgument(row);
+        checkArgument(col);
         int idx = xyTo1D(row, col);
         if (isIndexIlegal(idx) && !cellsStatus[idx]) {
             cellsStatus[idx] = true;
@@ -68,22 +68,22 @@ public class Percolation {
                 }
             }
 
-            if (uf.connected(virtrueTopIdx, virtrueBottomIdx)) isPercolated = true;
+            if (!isPercolated && uf.connected(virtrueTopIdx, virtrueBottomIdx)) isPercolated = true;
         }
     }
 
     // is site (row, col) open?
     public boolean isOpen(int row, int col) {
-        checkArguments(row);
-        checkArguments(col);
+        checkArgument(row);
+        checkArgument(col);
         int idx = xyTo1D(row, col);
         return cellsStatus[idx];
     }
 
     // is site (row, col) full?
     public boolean isFull(int row, int col) {
-        checkArguments(row);
-        checkArguments(col);
+        checkArgument(row);
+        checkArgument(col);
         int idx = xyTo1D(row, col);
         return ufWithVirtrueTopSite.connected(idx, virtrueTopIdx);
     }
@@ -132,19 +132,18 @@ public class Percolation {
         }
     }
 
-    private void checkArguments(int num) {
-        if (num <= 0 || num > sideLength) {
+    private void checkArgument(int num) {
+        if (num < 1 || num > sideLength) {
             throw new IllegalArgumentException("Argument " + num + " is illegal.");
         }
     }
 
     // For test
     // public static void main(String[] args) {
-    //     Percolation p = new Percolation(-10);
-    //     // System.out.println(Arrays.toString(p.cellsStatus));
+    //     Percolation p = new Percolation(10);
     //     System.out.println("length " + p.cellsStatus.length);
     //     System.out.println("Open 3, 4 ");
     //     p.open(1, 5);
-    //     System.out.println("Is -1, 5 open? " + p.isOpen(-1, 5));
+    //     System.out.println("Is 1, 5 open? " + p.isOpen(1, 5));
     // }
 }

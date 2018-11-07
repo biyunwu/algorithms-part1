@@ -8,15 +8,14 @@ import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
-    private int sideLength; // Grid unit
-    private int totalSitesNum;
-    private double[] percolationRateList;
-    private int trialsNum;
-    private double meanPercolationRate;
-    private double standardDeviation;
-    private double confidenceCoefficient = 1.96;
-    private double confidence95Lo;
-    private double confidence95Hi;
+    private final int sideLength; // Grid unit
+    private final int totalSitesNum;
+    private final int trialsNum;
+    private final double[] percolationRateList;
+    private final double meanPercolationRate;
+    private final double standardDeviation;
+    private final double confidence95Lo;
+    private final double confidence95Hi;
 
     // perform trials independent experiments on an n-by-n grid
     public PercolationStats(int n, int trials) {
@@ -26,19 +25,22 @@ public class PercolationStats {
         else {
             sideLength = n;
             totalSitesNum = n * n;
-            percolationRateList = new double[trials];
             trialsNum = trials;
+            percolationRateList = new double[trials];
         }
 
-        calculateAveragePercolationThreshold();
+        meanPercolationRate = calculateAveragePercolationThreshold();
         standardDeviation = StdStats.stddev(percolationRateList);
-        confidence95Lo = meanPercolationRate - (confidenceCoefficient * standardDeviation / Math
+        double confidence95PercentCoefficient = 1.96;
+        confidence95Lo = meanPercolationRate - (confidence95PercentCoefficient * standardDeviation
+                / Math
                 .sqrt(trialsNum));
-        confidence95Hi = meanPercolationRate + (confidenceCoefficient * standardDeviation / Math
+        confidence95Hi = meanPercolationRate + (confidence95PercentCoefficient * standardDeviation
+                / Math
                 .sqrt(trialsNum));
     }
 
-    private void calculateAveragePercolationThreshold() {
+    private double calculateAveragePercolationThreshold() {
         for (int i = 0; i < trialsNum; i++) {
             Percolation p = new Percolation(sideLength);
             int row = getRandomIdx();
@@ -51,7 +53,7 @@ public class PercolationStats {
             double currPercolationRate = (double) p.numberOfOpenSites() / totalSitesNum;
             percolationRateList[i] = currPercolationRate;
         }
-        meanPercolationRate = StdStats.mean(percolationRateList);
+        return StdStats.mean(percolationRateList);
     }
 
     private int getRandomIdx() {
