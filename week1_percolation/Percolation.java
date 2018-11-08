@@ -39,8 +39,7 @@ public class Percolation {
 
     // open site (row, col) if it is not open already
     public void open(int row, int col) {
-        checkArgument(row);
-        checkArgument(col);
+        checkArguments(row, col);
         int idx = xyTo1D(row, col);
         if (isIndexIlegal(idx) && !cellsStatus[idx]) {
             cellsStatus[idx] = true;
@@ -74,16 +73,14 @@ public class Percolation {
 
     // is site (row, col) open?
     public boolean isOpen(int row, int col) {
-        checkArgument(row);
-        checkArgument(col);
+        checkArguments(row, col);
         int idx = xyTo1D(row, col);
         return cellsStatus[idx];
     }
 
     // is site (row, col) full?
     public boolean isFull(int row, int col) {
-        checkArgument(row);
-        checkArgument(col);
+        checkArguments(row, col);
         int idx = xyTo1D(row, col);
         return ufWithVirtrueTopSite.connected(idx, virtrueTopIdx);
     }
@@ -132,9 +129,11 @@ public class Percolation {
         }
     }
 
-    private void checkArgument(int num) {
-        if (num < 1 || num > sideLength) {
-            throw new IllegalArgumentException("Argument " + num + " is illegal.");
+    private void checkArguments(int... nums) {
+        for (int num : nums) {
+            if (num < 1 || num > sideLength) {
+                throw new IllegalArgumentException("Argument " + num + " is illegal.");
+            }
         }
     }
 
